@@ -9,8 +9,8 @@ $(BIN): $(SRC)
 	go build -o $(BIN)
 
 # run command at fixed intervals
-watch:
-	kouhai -i 2s "make test"
+watch: install
+	@kouhai -i 2s 'make test'
 
 # run all tests and rebuild when changed
 test: $(BIN)
