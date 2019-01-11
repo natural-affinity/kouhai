@@ -8,10 +8,7 @@ BIN := $(value GOPATH)\bin\$(APPLICATION).exe
 $(BIN): $(SRC)
 	go build -o $(BIN)
 
-echo: 
-	@echo $(SRC)
-	@echo $(APPLICATION)
-
+# run command at fixed intervals
 watch:
 	kouhai -i 2s "make test"
 

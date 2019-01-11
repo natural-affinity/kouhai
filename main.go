@@ -20,7 +20,7 @@ const Usage = `
 
   Usage:
     kouhai [--interval n] <cmd>
-    kouhai  --help  
+    kouhai  --help
     kouhai  --version
 
   Options:
