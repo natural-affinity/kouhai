@@ -32,7 +32,7 @@ const Usage = `
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	// parse usage string and fetch args
+	// parse usage string and collect args
 	args, err := docopt.ParseArgs(Usage, os.Args[1:], Version)
 	if err != nil {
 		log.Fatalf("invalid usage string: %s", err.Error())
@@ -50,8 +50,7 @@ func main() {
 	for {
 		out, err := senpai.Dispatch(task)
 		if err != nil {
-			log.Printf("%s\n", out)
-			log.Fatalf("invalid command: %s", err.Error())
+			log.Fatalf("%s\n", out)
 		}
 
 		fmt.Printf(out)
