@@ -19,11 +19,12 @@ const Usage = `
     Run tasks at periodic intervals
 
   Usage:
-    kouhai [--interval n] <cmd>
+    kouhai [--interval n] [--stop] <cmd>
     kouhai  --help
     kouhai  --version
 
   Options:
+	-s, --stop        stop on error
     -h, --help  	  display help information	
 	-v, --version  	  display version information
 	-i, --interval n  set refresh interval [default: 1s]
@@ -40,6 +41,7 @@ func main() {
 
 	// extract options and args
 	cmd := args["<cmd>"].(string)
+	stop := args["--stop"].(bool)
 	interval, err := time.ParseDuration(args["--interval"].(string))
 	if err != nil {
 		log.Fatalf("invalid interval: %s", err.Error())
@@ -49,7 +51,7 @@ func main() {
 	task := &senpai.Task{Command: cmd, Interval: interval}
 	for {
 		out, err := senpai.Dispatch(task)
-		if err != nil {
+		if err != nil && stop {
 			log.Fatalf("%s\n", out)
 		}
 
