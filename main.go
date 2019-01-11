@@ -15,7 +15,7 @@ const Version = "0.0.1"
 
 // Usage message (docopt interface)
 const Usage = `
-  Kouhai
+  Kouhai (kōhai)
     Run tasks at periodic intervals
 
   Usage:
@@ -27,7 +27,6 @@ const Usage = `
     -h, --help  	  display help information	
 	-v, --version  	  display version information
 	-i, --interval n  set refresh interval [default: 1s]
-
 `
 
 func main() {
@@ -51,6 +50,7 @@ func main() {
 	for {
 		out, err := senpai.Dispatch(task)
 		if err != nil {
+			log.Printf("%s\n", out)
 			log.Fatalf("invalid command: %s", err.Error())
 		}
 
