@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"time"
@@ -30,49 +31,57 @@ const Usage = `
 
 `
 
-func main() {
-	args, _ := docopt.ParseArgs(Usage, os.Args[1:], Version)
-	_, err = time.ParseDuration(args["--interval"].(string))
-	cmd := args["<cmd>"].(string)
-	fmt.Println(args)
-
-	Execute(cmd)
-
-	//t := Task{Command = cmd, Interval = interval}
-	//fmt.Printf("%+v", t)
-	//fmt.Println(err)
-
-	/*
-		for {
-			cmd := exec.Command("sh", "-c", args["<cmd>"].(string))
-			out, err := cmd.CombinedOutput()
-
-			if err != nil {
-				log.Fatal(err)
-				os.Exit(1)
-			}
-
-			fmt.Printf("%s", out)
-			time.Sleep(interval)
-		}*/
+// Task to execute
+type Task struct {
+	Command  string
+	Interval time.Duration
 }
 
-// Execute command
-func Execute(cmd string) {
+func main() {
+	log.SetFlags(log.Lshortfile)
+
+	// parse usage string and fetch args
+	args, err := docopt.ParseArgs(Usage, os.Args[1:], Version)
+	if err != nil {
+		log.Fatalf("invalid usage string: %s", err.Error())
+	}
+
+	// extract options and args
+	cmd := args["<cmd>"].(string)
+	interval, err := time.ParseDuration(args["--interval"].(string))
+	if err != nil {
+		log.Fatalf("invalid interval: %s", err.Error())
+	}
+
+	// build and execute task
+	t := &Task{Command: cmd, Interval: interval}
+	for {
+		out, err := Execute(t)
+		if err != nil {
+			log.Fatalf("invalid command: %s", err.Error())
+		}
+
+		fmt.Printf(out)
+		time.Sleep(interval)
+	}
+
+}
+
+// Execute command and fetch results
+func Execute(t *Task) (string, error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+	defer stdout.Reset()
+	defer stderr.Reset()
 
-	command := exec.Command("bash", "-c", cmd)
+	command := exec.Command("sh", "-c", t.Command)
 	command.Stdout = &stdout
 	command.Stderr = &stderr
 
 	err := command.Run()
 	if err != nil {
-		fmt.Println(stdout.String())
-		fmt.Println(stderr.String())
+		return stderr.String(), err
 	}
-	fmt.Println(stdout.String())
 
-	stdout.Reset()
-	stderr.Reset()
+	return stdout.String(), nil
 }
