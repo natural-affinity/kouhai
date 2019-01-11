@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"time"
 
 	docopt "github.com/docopt/docopt-go"
+	"github.com/natural-affinity/kouhai/senpai"
 )
 
 // Version identifier
@@ -31,12 +30,6 @@ const Usage = `
 
 `
 
-// Task to execute
-type Task struct {
-	Command  string
-	Interval time.Duration
-}
-
 func main() {
 	log.SetFlags(log.Lshortfile)
 
@@ -54,9 +47,9 @@ func main() {
 	}
 
 	// build and execute task
-	t := &Task{Command: cmd, Interval: interval}
+	task := &senpai.Task{Command: cmd, Interval: interval}
 	for {
-		out, err := Execute(t)
+		out, err := senpai.Dispatch(task)
 		if err != nil {
 			log.Fatalf("invalid command: %s", err.Error())
 		}
@@ -64,24 +57,4 @@ func main() {
 		fmt.Printf(out)
 		time.Sleep(interval)
 	}
-
-}
-
-// Execute command and fetch results
-func Execute(t *Task) (string, error) {
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	defer stdout.Reset()
-	defer stderr.Reset()
-
-	command := exec.Command("sh", "-c", t.Command)
-	command.Stdout = &stdout
-	command.Stderr = &stderr
-
-	err := command.Run()
-	if err != nil {
-		return stderr.String(), err
-	}
-
-	return stdout.String(), nil
 }
