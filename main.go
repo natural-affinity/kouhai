@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -48,14 +47,8 @@ func main() {
 	}
 
 	// build and execute task
-	task := &senpai.Task{Command: cmd, Interval: interval}
-	for {
-		out, err := senpai.Dispatch(task)
-		if err != nil && stop {
-			log.Fatalf("%s\n", out)
-		}
-
-		fmt.Printf(out)
-		time.Sleep(interval)
+	task := &senpai.Task{Command: cmd, Interval: interval, Stop: stop}
+	if out, err := task.Monitor(); err != nil {
+		log.Fatalf("%s\n", out)
 	}
 }
