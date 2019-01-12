@@ -25,7 +25,7 @@ const Usage = `
   Options:
     -s, --stop        stop on error
     -h, --help        display help information
-    -v, --version  	  display version information
+    -v, --version     display version information
     -i, --interval n  set refresh interval [default: 1s]
 `
 
