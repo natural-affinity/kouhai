@@ -24,7 +24,7 @@ func TestDispatch(t *testing.T) {
 		aout, aerr := senpai.Dispatch(tt.Command)
 
 		out := (aout != tt.Output)
-		err := (aerr != nil && tt.Error != nil && aerr.Error() != tt.Error.Error()) || (aerr == nil && tt.Error != nil)
+		err := invalidError(aerr, tt.Error)
 
 		if out || err {
 			t.Errorf("\nTest: %s\n %s\nExpected:\n %s %s\nActual:\n %s %s",
@@ -33,4 +33,11 @@ func TestDispatch(t *testing.T) {
 				aout, aerr)
 		}
 	}
+}
+
+func invalidError(actual error, expected error) bool {
+	a := (actual != nil && expected != nil && actual.Error() != expected.Error())
+	b := (actual == nil && expected != nil)
+
+	return a || b
 }
