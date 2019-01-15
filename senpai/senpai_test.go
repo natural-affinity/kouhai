@@ -13,10 +13,10 @@ var dispatchTests = []struct {
 	Output  string
 	Error   error
 }{
-	{"invokeBash", "echo $0", "sh\n", nil},
-	{"executeCmd", "echo hello", "hello\n", nil},
-	{"combinedOutput", "echo stdout; echo 1>&2 stderr", "stdout\nstderr\n", nil},
-	{"commandError", "fake-exe-path", "sh: fake-exe-path: command not found\n", errors.New("exit status 127")},
+	{"shell", "echo $0", "sh\n", nil},
+	{"execute", "echo hello", "hello\n", nil},
+	{"combined", "echo stdout; echo 1>&2 stderr", "stdout\nstderr\n", nil},
+	{"failure", "fake-exe-path", "sh: fake-exe-path: command not found\n", errors.New("exit status 127")},
 }
 
 func TestDispatch(t *testing.T) {
