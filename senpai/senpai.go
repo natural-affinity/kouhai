@@ -15,7 +15,7 @@ type Task struct {
 
 // Senpai monitors a task periodically
 type Senpai interface {
-	Monitor(func() bool) (string, error)
+	Monitor(forever func() bool) (string, error)
 	Dispatch() (string, error)
 }
 
