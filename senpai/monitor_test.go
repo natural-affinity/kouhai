@@ -5,49 +5,10 @@ import (
 	"testing"
 	"time"
 
+	capturer "github.com/kami-zh/go-capturer"
 	"github.com/natural-affinity/kouhai/senpai"
 	"github.com/natural-affinity/kouhai/spec"
 )
-
-func TestDispatch(t *testing.T) {
-	cases := []struct {
-		Name string
-		Out  string
-		Err  error
-		Task *senpai.Task
-	}{
-		{
-			"shell", "sh\n", nil,
-			&senpai.Task{Command: "echo $0"},
-		},
-		{
-			"execute", "hello\n", nil,
-			&senpai.Task{Command: "echo hello"},
-		},
-		{
-			"combined", "stdout\nstderr\n", nil,
-			&senpai.Task{Command: "echo stdout; echo 1>&2 stderr"},
-		},
-		{
-			"failure", "sh: fake-exe: command not found\n", errors.New("exit status 127"),
-			&senpai.Task{Command: "fake-exe"},
-		},
-	}
-
-	for _, tc := range cases {
-		actualOutput, actualError := tc.Task.Dispatch()
-
-		out := (actualOutput != tc.Out)
-		err := spec.IsInvalidError(actualError, tc.Err)
-
-		if out || err {
-			t.Errorf("\nTest: %s\n %s\nExpected:\n %s %s\nActual:\n %s %s",
-				tc.Name, tc.Task.Command,
-				tc.Out, tc.Err,
-				actualOutput, actualError)
-		}
-	}
-}
 
 func TestMonitor(t *testing.T) {
 	cases := []struct {
@@ -73,29 +34,27 @@ func TestMonitor(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		capture := &spec.Snapshot{}
-		if tc.Capture {
-			capture.Start()
-		}
+		var actualOutput string
+		var actualError error
 
 		forever := func() bool {
 			if tc.Times > 0 {
 				tc.Times--
 				return true
-			} else {
-				return false
 			}
+
+			return false
 		}
 
 		start := time.Now()
-		actualOutput, actualError := tc.Task.Monitor(forever)
-		elapsed := time.Since(start)
-
 		if tc.Capture {
-			capture.Copy()
-			capture.Release()
-			actualOutput = capture.Out
+			actualOutput = capturer.CaptureStdout(func() {
+				_, actualError = tc.Task.Monitor(forever)
+			})
+		} else {
+			actualOutput, actualError = tc.Task.Monitor(forever)
 		}
+		elapsed := time.Since(start)
 
 		out := (actualOutput != tc.Out)
 		err := spec.IsInvalidError(actualError, tc.Err)
