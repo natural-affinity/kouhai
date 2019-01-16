@@ -48,7 +48,8 @@ func main() {
 
 	// build and execute task
 	task := &senpai.Task{Command: cmd, Interval: interval, Stop: stop}
-	if out, err := task.Monitor(); err != nil {
+	forever := func() bool { return true }
+	if out, err := task.Monitor(forever); err != nil {
 		log.Fatalf("%s\n", out)
 	}
 }

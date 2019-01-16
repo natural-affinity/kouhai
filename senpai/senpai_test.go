@@ -55,23 +55,20 @@ func TestMonitor(t *testing.T) {
 		Capture bool
 		Out     string
 		Err     error
+		Times   int
 		Task    *senpai.Task
 	}{
 		{
 			"stop", false, "sh: fake-exe: command not found\n", errors.New("exit status 127"),
-			&senpai.Task{Command: "fake-exe", Stop: true, Times: 2, Interval: 1 * time.Millisecond},
+			2, &senpai.Task{Command: "fake-exe", Stop: true, Interval: 1 * time.Millisecond},
 		},
 		{
-			"times", false, "monitored: 4 times", nil,
-			&senpai.Task{Command: "echo hello", Stop: false, Times: 4, Interval: 1 * time.Millisecond},
-		},
-		{
-			"delay", false, "monitored: 2 times", nil,
-			&senpai.Task{Command: "echo hello", Stop: false, Times: 2, Interval: 50 * time.Millisecond},
+			"delay", false, "finished monitoring", nil,
+			4, &senpai.Task{Command: "echo hello", Stop: false, Interval: 20 * time.Millisecond},
 		},
 		{
 			"print", true, "hello\nhello\n", nil,
-			&senpai.Task{Command: "echo hello", Stop: false, Times: 2, Interval: 1 * time.Millisecond},
+			2, &senpai.Task{Command: "echo hello", Stop: false, Interval: 1 * time.Millisecond},
 		},
 	}
 
@@ -81,8 +78,17 @@ func TestMonitor(t *testing.T) {
 			capture.Start()
 		}
 
+		forever := func() bool {
+			if tc.Times > 0 {
+				tc.Times--
+				return true
+			} else {
+				return false
+			}
+		}
+
 		start := time.Now()
-		actualOutput, actualError := tc.Task.Monitor()
+		actualOutput, actualError := tc.Task.Monitor(forever)
 		elapsed := time.Since(start)
 
 		if tc.Capture {

@@ -9,14 +9,13 @@ import (
 // Task to execute
 type Task struct {
 	Stop     bool
-	Times    int
 	Command  string
 	Interval time.Duration
 }
 
 // Senpai monitors a task periodically
 type Senpai interface {
-	Monitor() (string, error)
+	Monitor(func() bool) (string, error)
 	Dispatch() (string, error)
 }
 
@@ -33,25 +32,16 @@ func (t *Task) Dispatch() (string, error) {
 }
 
 // Monitor task
-func (t *Task) Monitor() (string, error) {
-	i := 0
-	if t.Times == 0 {
-		i = -1
-	}
-
-	for i < t.Times {
+func (t *Task) Monitor(forever func() bool) (string, error) {
+	for forever() {
 		out, err := t.Dispatch()
 		if err != nil && t.Stop {
 			return out, err
-		}
-
-		if t.Times > 0 {
-			i = i + 1
 		}
 
 		fmt.Printf(out)
 		time.Sleep(t.Interval)
 	}
 
-	return fmt.Sprintf("monitored: %d times", i), nil
+	return "finished monitoring", nil
 }
