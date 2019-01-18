@@ -1,0 +1,4 @@
+Usage:
+    kouhai [--interval n] [--stop] <cmd>
+    kouhai  --help
+    kouhai  --version
