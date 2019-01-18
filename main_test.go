@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/natural-affinity/kouhai/spec"
+	helper "github.com/natural-affinity/kouhai/testhelpers"
 )
 
 var update = flag.Bool("update", false, "update .golden files")
@@ -26,9 +26,9 @@ func TestUsage(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		_, command := spec.LoadTestFile(t, "testdata", tc.Name+".input")
-		golden, expected := spec.LoadTestFile(t, "testdata", tc.Name+".golden")
-		aout, _ := spec.Run(string(command))
+		_, command := helper.LoadTestFile(t, "testdata", tc.Name+".input")
+		golden, expected := helper.LoadTestFile(t, "testdata", tc.Name+".golden")
+		aout, _ := helper.Run(string(command))
 
 		if *update {
 			ioutil.WriteFile(golden, aout, 0644)
