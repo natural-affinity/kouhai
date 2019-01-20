@@ -6,8 +6,8 @@ import (
 	"time"
 
 	capturer "github.com/kami-zh/go-capturer"
+	"github.com/natural-affinity/gotanda"
 	"github.com/natural-affinity/kouhai/senpai"
-	helper "github.com/natural-affinity/kouhai/testhelpers"
 )
 
 func TestDispatch(t *testing.T) {
@@ -39,7 +39,7 @@ func TestDispatch(t *testing.T) {
 		actualOutput, actualError := tc.Task.Dispatch()
 
 		out := (actualOutput != tc.Out)
-		err := helper.IsInvalidError(actualError, tc.Err)
+		err := gotanda.IsInvalidError(actualError, tc.Err)
 
 		if out || err {
 			t.Errorf("\nTest: %s\n %s\nExpected:\n %s %s\nActual:\n %s %s",
@@ -97,7 +97,7 @@ func TestMonitor(t *testing.T) {
 		elapsed := time.Since(start)
 
 		out := (actualOutput != tc.Out)
-		err := helper.IsInvalidError(actualError, tc.Err)
+		err := gotanda.IsInvalidError(actualError, tc.Err)
 		dur := (elapsed < tc.Task.Interval)
 
 		if out || err {

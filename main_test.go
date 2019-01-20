@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	helper "github.com/natural-affinity/kouhai/testhelpers"
+	"github.com/natural-affinity/gotanda"
 )
 
 var update = flag.Bool("update", false, "update .golden files")
@@ -26,9 +26,9 @@ func TestUsage(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		_, command := helper.LoadTestFile(t, "testdata", tc.Name+".input")
-		golden, expected := helper.LoadTestFile(t, "testdata", tc.Name+".golden")
-		aout, _ := helper.Run(string(command))
+		_, command := gotanda.LoadTestFile(t, "testdata", tc.Name+".input")
+		golden, expected := gotanda.LoadTestFile(t, "testdata", tc.Name+".golden")
+		aout, _ := gotanda.Run(string(command))
 
 		if *update {
 			ioutil.WriteFile(golden, aout, 0644)
