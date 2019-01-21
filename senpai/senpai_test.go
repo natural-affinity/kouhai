@@ -38,8 +38,8 @@ func TestDispatch(t *testing.T) {
 	for _, tc := range cases {
 		actualOutput, actualError := tc.Task.Dispatch()
 
-		out := (actualOutput != tc.Out)
-		err := gotanda.IsInvalidError(actualError, tc.Err)
+		out := !(actualOutput == tc.Out)
+		err := !gotanda.CompareError(actualError, tc.Err)
 
 		if out || err {
 			t.Errorf("\nTest: %s\n %s\nExpected:\n %s %s\nActual:\n %s %s",
@@ -96,8 +96,8 @@ func TestMonitor(t *testing.T) {
 		}
 		elapsed := time.Since(start)
 
-		out := (actualOutput != tc.Out)
-		err := gotanda.IsInvalidError(actualError, tc.Err)
+		out := !(actualOutput == tc.Out)
+		err := !gotanda.CompareError(actualError, tc.Err)
 		dur := (elapsed < tc.Task.Interval)
 
 		if out || err {
