@@ -10,7 +10,7 @@ kouhai -h
 ```
 
 ```bash
-# invoke make test every 2s and stop on first failure
+# invoke every 2s and stop on first failure
 kouhai -s -i 2s "make test"
 ```
 

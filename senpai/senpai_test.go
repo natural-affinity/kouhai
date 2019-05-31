@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	capturer "github.com/kami-zh/go-capturer"
 	"github.com/natural-affinity/gotanda"
 	"github.com/natural-affinity/kouhai/senpai"
 )
@@ -88,7 +87,7 @@ func TestMonitor(t *testing.T) {
 
 		start := time.Now()
 		if tc.Capture {
-			actualOutput = capturer.CaptureStdout(func() {
+			_, actualOutput = gotanda.Capture(func() {
 				_, actualError = tc.Task.Monitor(forever)
 			})
 		} else {
