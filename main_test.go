@@ -38,7 +38,7 @@ func TestUsage(t *testing.T) {
 		out := !bytes.Equal(aout, expected)
 
 		if out {
-			t.Errorf("Test: %s\n Expected: %s\n Actual: %s\n", tc.Name, aout, expected)
+			t.Errorf("Test: %s\n Expected: %s\n Actual: %s\n", tc.Name, expected, aout)
 		}
 	}
 }
