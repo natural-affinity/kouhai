@@ -17,7 +17,7 @@ func TestDispatch(t *testing.T) {
 		Task *senpai.Task
 	}{
 		{
-			"shell", "sh\n", nil,
+			"shell", "bash\n", nil,
 			&senpai.Task{Command: "echo $0"},
 		},
 		{
@@ -29,7 +29,7 @@ func TestDispatch(t *testing.T) {
 			&senpai.Task{Command: "echo stdout; echo 1>&2 stderr"},
 		},
 		{
-			"failure", "sh: fake-exe: command not found\n", errors.New("exit status 127"),
+			"failure", "bash: fake-exe: command not found\n", errors.New("exit status 127"),
 			&senpai.Task{Command: "fake-exe"},
 		},
 	}
@@ -59,7 +59,7 @@ func TestMonitor(t *testing.T) {
 		Task    *senpai.Task
 	}{
 		{
-			"stop", false, "sh: fake-exe: command not found\n", errors.New("exit status 127"),
+			"stop", false, "bash: fake-exe: command not found\n", errors.New("exit status 127"),
 			2, &senpai.Task{Command: "fake-exe", Stop: true, Interval: 1 * time.Millisecond},
 		},
 		{

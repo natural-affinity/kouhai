@@ -1,2 +1,2 @@
-main.go:53: sh: fake-exe-path: command not found
+main.go:53: bash: fake-exe-path: command not found
 

@@ -21,7 +21,7 @@ type Senpai interface {
 
 // Dispatch command
 func (t *Task) Dispatch() (string, error) {
-	command := exec.Command("sh", "-c", t.Command)
+	command := exec.Command("bash", "-c", t.Command)
 	out, err := command.CombinedOutput()
 
 	if err != nil {
