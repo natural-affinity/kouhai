@@ -1,9 +1,7 @@
 package main_test
 
 import (
-	"bytes"
 	"flag"
-	"io/ioutil"
 	"testing"
 
 	"github.com/natural-affinity/gotanda"
@@ -26,19 +24,7 @@ func TestUsage(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		_, command := gotanda.LoadTestFile(t, "testdata", tc.Name+".input")
-		golden, expected := gotanda.LoadTestFile(t, "testdata", tc.Name+".golden")
-		aout, _ := gotanda.Run(string(command))
-
-		if *update {
-			ioutil.WriteFile(golden, aout, 0644)
-		}
-
-		expected, _ = ioutil.ReadFile(golden)
-		out := !bytes.Equal(aout, expected)
-
-		if out {
-			t.Errorf("Test: %s\n Expected: %s\n Actual: %s\n", tc.Name, expected, aout)
-		}
+		r := gotanda.CompareCommand(t, tc, update)
+		r.Assert(t, tc)
 	}
 }
