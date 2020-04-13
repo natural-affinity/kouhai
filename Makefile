@@ -1,1 +1,1 @@
-include github.com/natural-affinity/makefiles/golang.bin.mk
+include makefiles/golang.bin.mk
