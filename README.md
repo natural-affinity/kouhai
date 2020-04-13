@@ -2,8 +2,10 @@
 
 Periodic command execution at specific intervals (i.e. `watch`).
 
-## Usage
+## Dependencies
+* [makefiles](https://github.com/natural-affinity/makefiles)
 
+## Usage
 ```bash
 # view help and usage options
 kouhai -h
